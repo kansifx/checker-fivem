@@ -1,6 +1,6 @@
 # FiveM Player Finder Bot
 
-Bot Discord untuk mencari player yang sedang online di server FiveM IndoPride (IDP) berdasarkan awalan nama.
+Bot Discord untuk mencari player yang sedang online di server FiveM berdasarkan awalan nama.
 
 ## Fitur
 - Cari player berdasarkan awalan nama (case-insensitive)
