@@ -14,7 +14,7 @@ const TOKEN = process.env.TOKEN;
 
 const SERVERS = {
     'idp': { name: 'IndoPride', url: 'http://kota2.indopride.id:30120', color: 0x00BFFF, emoji: '🏙️' },
-    'ime': { name: 'iMe Roleplay',        url: 'http://main.imeroleplay.com:30120', color: 0xFF4500, emoji: '🎮' },
+    'ime': { name: 'iMe Roleplay', url: 'http://inter.imeroleplay.com:30120', color: 0xFF4500, emoji: '🎮' },
 };
 
 async function fetchWithRetry(url, retries = 3) {
