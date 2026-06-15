@@ -3,9 +3,9 @@ const https = require('https');
 const fs = require('fs');
 
 // === CONFIGURATION ===
-const TOKEN = process.env.TOKEN;
+const TOKEN = process.env.TOKEN; // Set di Railway Variables
 const TARGET_CHANNEL_ID = '1512793386199945437'; 
-const HISTORY_FILE = 'checked_history.txt';
+const HISTORY_FILE = '/tmp/checked_history.txt'; // /tmp agar bisa ditulis di Railway
 
 const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
 const CONCURRENT_REQUESTS = 30; 
@@ -77,7 +77,11 @@ client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
 
     if (message.content === '!start') {
-        if (isRunning) return message.reply('Bot-nya kan lagi jalan nyari, sabar dulu kocak! 😤');
+        if (isRunning) {
+            isRunning = false;
+            queue = [];
+            await sleep(500);
+        }
         
         isRunning = true;
         
@@ -93,7 +97,6 @@ client.on('messageCreate', async (message) => {
                     for (let l = 0; l < chars.length; l++) {
                         const username = chars[i] + chars[j] + chars[k] + chars[l];
                         totalGenerated++;
-                        
                         if (!checkedHistory.has(username)) {
                             queue.push(username);
                         }
@@ -104,12 +107,11 @@ client.on('messageCreate', async (message) => {
         
         if (queue.length === 0) {
             isRunning = false;
-            return message.channel.send('🏁 Wah gila, semua kombinasi 4 karakter di dunia ini sudah habis kamu cek semua!');
+            return message.channel.send('🏁 Wah gila, semua kombinasi 4 karakter sudah habis kamu cek semua!');
         }
 
         queue = shuffle(queue);
-        
-        message.channel.send(`🚀 **Pencarian dilanjutkan!** Memeriksa \`${queue.length}\` sisa kombinasi baru dari total ${totalGenerated} variasi secara acak.`);
+        message.channel.send(`🚀 **Pencarian dilanjutkan!** Memeriksa \`${queue.length}\` sisa kombinasi dari total ${totalGenerated} variasi secara acak.`);
 
         const targetChannel = client.channels.cache.get(TARGET_CHANNEL_ID) || message.channel;
 
@@ -120,9 +122,9 @@ client.on('messageCreate', async (message) => {
         }
         
         if (!isRunning) {
-            targetChannel.send('🛑 Pencarian dihentikan. Semua riwayat sebelum tombol stop ditekan sudah aman tersimpan!');
+            targetChannel.send('🛑 Pencarian dihentikan. Riwayat sudah tersimpan!');
         } else {
-            targetChannel.send('🏁 Semua kombinasi selesai dicek total tanpa sisa!');
+            targetChannel.send('🏁 Semua kombinasi selesai dicek!');
             isRunning = false;
         }
     }
@@ -134,4 +136,4 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-client.login(TOKEN); // ← FIX: was BOT_TOKEN
+client.login(TOKEN);
