@@ -1,12 +1,11 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const https = require('https');
-const fs = require('fs'); // Modul bawaan untuk membaca/menulis file database
+const fs = require('fs');
 
 // === CONFIGURATION ===
-// GANTI TOKEN DI BAWAH INI JIKA SUDAH KAMU RESET DI DEVELOPER PORTAL!
 const TOKEN = process.env.TOKEN;
 const TARGET_CHANNEL_ID = '1512793386199945437'; 
-const HISTORY_FILE = 'checked_history.txt'; // Nama file database riwayat kamu
+const HISTORY_FILE = 'checked_history.txt';
 
 const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
 const CONCURRENT_REQUESTS = 30; 
@@ -32,18 +31,15 @@ function shuffle(array) {
     return array;
 }
 
-// Fungsi untuk mencatat nama yang TAKEN ke dalam file txt
 function saveToHistory(username) {
     fs.appendFileSync(HISTORY_FILE, username + '\n', 'utf8');
 }
 
-// Fungsi untuk membaca daftar nama yang sudah pernah dicek
 function loadHistory() {
     if (!fs.existsSync(HISTORY_FILE)) {
-        return new Set(); // Jika file belum ada, return database kosong
+        return new Set();
     }
     const fileContent = fs.readFileSync(HISTORY_FILE, 'utf8');
-    // Memasukkan riwayat ke dalam struktur 'Set' agar proses pencarian data super instan
     return new Set(fileContent.split('\n').map(name => name.trim()).filter(Boolean));
 }
 
@@ -63,7 +59,7 @@ function checkUsername(username, channel) {
                 channel.send(`⚠️ **JACKPOT! USERNAME KOSONG NEGO HALAL!** ⚠️\n> Username: \`${username}\` beneran kosong! Buruan ganti sekarang! @everyone`);
             } else if (res.statusCode === 200) {
                 console.log(`[TAKEN] ${username}`);
-                saveToHistory(username); // Masukkan ke riwayat txt agar besok-besok gak dicek lagi
+                saveToHistory(username);
             }
             resolve();
         });
@@ -80,17 +76,14 @@ client.once('ready', () => {
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
 
-    // Perintah Memulai
     if (message.content === '!start') {
         if (isRunning) return message.reply('Bot-nya kan lagi jalan nyari, sabar dulu kocak! 😤');
         
         isRunning = true;
         
-        // 1. Ambil riwayat pengecekan sebelumnya
         const checkedHistory = loadHistory();
         message.reply(`🔄 **Memuat database riwayat...** Sudah ada \`${checkedHistory.size}\` nama yang pernah dicatat & dilewati.`);
 
-        // 2. Generate kombinasi baru
         queue = [];
         let totalGenerated = 0;
         
@@ -101,7 +94,6 @@ client.on('messageCreate', async (message) => {
                         const username = chars[i] + chars[j] + chars[k] + chars[l];
                         totalGenerated++;
                         
-                        // HANYA MASUKKAN KE ANTREAN JIKA BELUM PERNAH DICEK
                         if (!checkedHistory.has(username)) {
                             queue.push(username);
                         }
@@ -115,7 +107,6 @@ client.on('messageCreate', async (message) => {
             return message.channel.send('🏁 Wah gila, semua kombinasi 4 karakter di dunia ini sudah habis kamu cek semua!');
         }
 
-        // 3. Acak sisa antrean yang belum dicek
         queue = shuffle(queue);
         
         message.channel.send(`🚀 **Pencarian dilanjutkan!** Memeriksa \`${queue.length}\` sisa kombinasi baru dari total ${totalGenerated} variasi secara acak.`);
@@ -136,7 +127,6 @@ client.on('messageCreate', async (message) => {
         }
     }
 
-    // Perintah Menghentikan
     if (message.content === '!stop') {
         if (!isRunning) return message.reply('Bot-nya emang lagi tidur, gak usah di-stop.');
         isRunning = false;
@@ -144,4 +134,4 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-client.login(BOT_TOKEN);
+client.login(TOKEN); // ← FIX: was BOT_TOKEN
