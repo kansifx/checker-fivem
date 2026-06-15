@@ -68,7 +68,7 @@ function checkUsername(username, channel) {
     });
 }
 
-client.once('ready', () => {
+client.once('clientReady', () => {
     console.log(`=== Bot ${client.user.tag} Sudah Online! ===`);
     console.log("Ketik !start di server Discord untuk memulai pencarian.");
 });
