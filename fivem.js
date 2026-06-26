@@ -15,6 +15,7 @@ const TOKEN = process.env.TOKEN;
 const SERVERS = {
     'idp': { name: 'IndoPride', url: 'http://kota2.indopride.id:30120', color: 0x00BFFF, emoji: '🏙️' },
     'ime': { name: 'iMe Roleplay', url: 'http://inter.imeroleplay.com:30120', color: 0xFF4500, emoji: '🎮' },
+    'ckrp': { name: 'Cerita Kita RP', url: 'http://satu.ceritakitarp.com:30120', color: 0x00FF99, emoji: '🌴' },
 };
 
 async function fetchWithRetry(url, retries = 3) {
@@ -44,8 +45,8 @@ client.on('messageCreate', async (message) => {
             .setColor(0xFF0000)
             .setTitle('❌ Format Salah')
             .setDescription('**Usage:** `!find <server> <nama>`')
-            .addFields({ name: 'Server Tersedia', value: '`idp` — IndoPride (Kota 2)\n`ime` — iMe Roleplay' })
-            .addFields({ name: 'Contoh', value: '`!find idp gp`\n`!find ime ht`' })
+            .addFields({ name: 'Server Tersedia', value: '`idp` — IndoPride (Kota 2)\n`ime` — iMe Roleplay\n`ckrp` — Cerita Kita RP' })
+            .addFields({ name: 'Contoh', value: '`!find idp gp`\n`!find ime ht`\n`!find ckrp budi`' })
             .setTimestamp();
         return message.reply({ embeds: [embed] });
     }
@@ -59,7 +60,7 @@ client.on('messageCreate', async (message) => {
             .setColor(0xFF0000)
             .setTitle('❌ Server Tidak Ditemukan')
             .setDescription(`Server **"${serverKey}"** tidak ada.`)
-            .addFields({ name: 'Server Tersedia', value: '`idp` — IndoPride (Kota 2)\n`ime` — iMe Roleplay' })
+            .addFields({ name: 'Server Tersedia', value: '`idp` — IndoPride (Kota 2)\n`ime` — iMe Roleplay\n`ckrp` — Cerita Kita RP' })
             .setTimestamp();
         return message.reply({ embeds: [embed] });
     }
